@@ -51,7 +51,7 @@ pub(super) unsafe fn bind(fd: &FdOps, addr: &sockaddr_un) -> io::Result<()> {
             // Double cast because you cannot cast a reference to a pointer of arbitrary type
             // but you can cast any narrow pointer to any other narrow pointer
             addr as *const _ as *const sockaddr,
-            size_of::<sockaddr_un>() as u32,
+            size_of::<sockaddr_un>() as socklen_t,
         ) != -1
     };
     if success {
@@ -70,7 +70,7 @@ pub(super) unsafe fn connect(fd: &FdOps, addr: &sockaddr_un) -> io::Result<()> {
         libc::connect(
             fd.0,
             addr as *const _ as *const _,
-            size_of::<sockaddr_un>() as u32,
+            size_of::<sockaddr_un>() as socklen_t,
         ) != -1
     };
     if success {
@@ -101,7 +101,7 @@ pub(super) fn set_passcred(fd: &FdOps, passcred: bool) -> io::Result<()> {
                 SOL_SOCKET,
                 SO_PASSCRED,
                 &passcred as *const _ as *const _,
-                size_of_val(&passcred) as u32,
+                size_of_val(&passcred) as socklen_t,
             ) != -1
         };
         if success {

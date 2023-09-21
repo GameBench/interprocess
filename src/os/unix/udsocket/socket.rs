@@ -293,7 +293,7 @@ creates unusable socket that is not bound to any address, use `.set_destination(
         let mut addr_buf_staging = unsafe { zeroed::<sockaddr_un>() };
         // It's a void* so the doublecast is mandatory
         hdr.msg_name = &mut addr_buf_staging as *mut _ as *mut _;
-        hdr.msg_namelen = size_of_val(&addr_buf_staging).try_to::<u32>().unwrap();
+        hdr.msg_namelen = size_of_val(&addr_buf_staging).try_to::<socklen_t>().unwrap();
         fill_out_msghdr_r(&mut hdr, bufs, abuf.as_mut())?;
         let (success, bytes_read) = unsafe {
             let result = libc::recvmsg(self.as_raw_fd(), &mut hdr as *mut _, 0);
